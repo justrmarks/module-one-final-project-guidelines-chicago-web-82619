@@ -49,8 +49,18 @@ class User < ActiveRecord::Base
 
     # instance methods
 
-    def get_messages
-        self.messages
+
+    def display_messages(cursor=0)
+        choices = []
+        prompt = TTY::Prompt.new
+        self.messages[cursor..(cursor+20)].each do |message|
+            choices << { 
+                name: "Poster: #{message.get_poster_name} Time: #{message.datetime} \n#{message.text[0..100]}...",
+                value: message
+            }
+        end
+        choices << { name: "Next", value: cursor+=20 }
+        input = prompt.select("Which messages would you like to read?", choices)
     end
 
 end

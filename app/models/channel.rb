@@ -26,7 +26,7 @@ class Channel < ActiveRecord::Base
         data = JSON.parse(RestClient.get("https://slack.com/api/channels.history?token=#{token}&channel=#{self.slack_id}"))
         data["messages"].each do |message|
             Message.find_or_create_by({
-                ts: message["ts"],
+                ts: Time.at(message["ts"].to_f),
                 user_id: message["user"],
                 text: message["text"],
                 channel_id: self.slack_id,
