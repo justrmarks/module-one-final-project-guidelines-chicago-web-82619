@@ -2,6 +2,8 @@ class Channel < ActiveRecord::Base
     has_many :messages
     has_many :users, through: :messages
 
+#   Class Methods
+
     def self.update_channels
         data = JSON.parse(RestClient.get("https://slack.com/api/channels.list?token=#{token}"))
         data["channels"].each do |channel|
@@ -16,6 +18,8 @@ class Channel < ActiveRecord::Base
             end
         end
     end
+
+#   Instanace Methods
 
     def update_messages
         data = JSON.parse(RestClient.get("https://slack.com/api/channels.history?token=#{token}&channel=#{self.slack_id}"))

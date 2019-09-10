@@ -1,9 +1,16 @@
 require_relative '../config/environment'
+require_relative 'menu.rb'
 
 # gem install rest-client
 require 'rest-client'
 require 'json'
 require 'pry'
+
+
+puts "Welcome to Slapi"
+user = User.login
+menu = Menu.new(user)
+menu.main_menu
 
 
 

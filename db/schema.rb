@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190910183820) do
+ActiveRecord::Schema.define(version: 20190910193608) do
 
   create_table "channels", force: :cascade do |t|
     t.string "name"
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20190910183820) do
     t.string "slack_id"
     t.string "color"
     t.string "email"
+    t.string "password"
   end
 
 end
