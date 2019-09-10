@@ -57,3 +57,17 @@ Projects need to be approved prior to launching into them, so take some time to 
 # in config/environment.rb add this line:
 ActiveRecord::Base.logger = nil
 ```
+
+########################
+Notes
+########################
+
+1. Start program and display welcome message
+2. User enters name
+  a. get slack info tied to user
+  b. findorcreate messages to message table
+  c. findorcreate channels to channel table
+3. Display menu - read, post, insights, exit
+  a. read - can read or find messages in channel
+  b. post - can post a message to a channel
+  c. insights - gives info about channel
