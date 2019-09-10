@@ -1,6 +1,8 @@
 class User < ActiveRecord::Base
     has_many :messages
     has_many :channels, through: :messages
+    self.primary_key = "slack_id"
+
 
 #   Class Methods
 
@@ -23,12 +25,12 @@ class User < ActiveRecord::Base
 
     #method to authenticate user and return a user instance
     def self.login
+        prompt = TTY::Prompt.new
         puts "Please enter name:"
         name = gets.chomp
         user = all.find_by(name: name)
         if user
-            puts "Please enter a password:"
-            password = gets.chomp
+            password = prompt.mask("Please enter a password:")
             if !user.password
                 puts "Setting your password...."
                 user.update(password: password)
@@ -43,6 +45,12 @@ class User < ActiveRecord::Base
             puts "No user found."
             self.login
         end
+    end
+
+    # instance methods
+
+    def get_messages
+        self.messages
     end
 
 end

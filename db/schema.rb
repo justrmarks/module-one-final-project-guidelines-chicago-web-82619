@@ -21,8 +21,8 @@ ActiveRecord::Schema.define(version: 20190910193608) do
   create_table "messages", force: :cascade do |t|
     t.string "ts"
     t.string "text"
-    t.string "user_slack_id"
-    t.string "channel_slack_id"
+    t.string "user_id"
+    t.string "channel_id"
     t.string "subtype"
   end
 

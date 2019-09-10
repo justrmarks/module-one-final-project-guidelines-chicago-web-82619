@@ -1,6 +1,7 @@
 class Channel < ActiveRecord::Base
     has_many :messages
     has_many :users, through: :messages
+    self.primary_key = "slack_id"
 
 #   Class Methods
 
@@ -26,9 +27,9 @@ class Channel < ActiveRecord::Base
         data["messages"].each do |message|
             Message.find_or_create_by({
                 ts: message["ts"],
-                user_slack_id: message["user"],
+                user_id: message["user"],
                 text: message["text"],
-                channel_slack_id: self.slack_id,
+                channel_id: self.slack_id,
                 subtype: message["subtype"]
             })
         end
