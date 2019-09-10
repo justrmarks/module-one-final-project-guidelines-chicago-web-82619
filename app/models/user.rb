@@ -34,12 +34,14 @@ class User < ActiveRecord::Base
             if !user.password
                 puts "Setting your password...."
                 user.update(password: password)
+                user
             elsif user.password != password
                 puts "Incorrect password"
                 self.login
             else
                 puts "Signing in #{user.name}"
                 sleep 2
+                user
             end
         else
             puts "No user found."
@@ -49,18 +51,17 @@ class User < ActiveRecord::Base
 
     # instance methods
 
-
     def display_messages(cursor=0)
         choices = []
         prompt = TTY::Prompt.new
-        self.messages[cursor..(cursor+20)].each do |message|
+        self.messages.each do |message|
             choices << { 
-                name: "Poster: #{message.get_poster_name} Time: #{message.datetime} \n#{message.text[0..100]}...",
+                name: "Poster: #{message.get_poster_name} Time: #{message.datetime} \n#{message.text[0..100]}...\n",
                 value: message
             }
         end
-        choices << { name: "Next", value: cursor+=20 }
-        input = prompt.select("Which messages would you like to read?", choices)
+        input = prompt.enum_select("Which messages would you like to read?", choices, per_page: 5)
+        input.display
     end
 
 end

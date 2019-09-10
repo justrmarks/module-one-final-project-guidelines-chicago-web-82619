@@ -10,4 +10,12 @@ class Message < ActiveRecord::Base
         Time.at(self.ts.to_f).strftime("%H:%M")
     end
 
+    def display
+        prompt = TTY::Prompt.new
+        system("clear")
+        puts "#{self.get_poster_name} @ #{self.datetime}"
+        puts "-" * self.text.length
+        puts self.text
+    end
+
 end
