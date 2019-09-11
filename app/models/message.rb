@@ -3,7 +3,14 @@ class Message < ActiveRecord::Base
     belongs_to :channel, :foreign_key => "channel_id"
 
     def get_poster_name
-        User.all.find_by(slack_id: self.user_id).name
+        user = User.find_by(slack_id: self.user_id)
+        if user 
+            user.display_name
+        end
+    end 
+
+    def get_channel_name
+        Channel.all.find_by(slack_id: self.channel_id).name
     end
 
     def datetime

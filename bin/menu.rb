@@ -39,11 +39,11 @@ class Menu
             when 1 
                 self.user.display_messages
             when 2 
-                write_menu
+                self.user.display_channels
             when 3 
-                insight_menu
+                User.display_messages_by_user
             when 4 
-                exit
+                main_menu
         end
     end
 

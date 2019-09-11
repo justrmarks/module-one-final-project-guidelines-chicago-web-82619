@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
     has_many :channels, through: :messages
     self.primary_key = "slack_id"
 
-
+    
 #   Class Methods
 
     # method to update database with user name and id
@@ -17,7 +17,8 @@ class User < ActiveRecord::Base
                     slack_id: member["id"],
                     name: member["name"],
                     color: member["color"],
-                    email: member["profile"]["email"]
+                    email: member["profile"]["email"],
+                    display_name: member["profile"]["display_name"]
                 })
             end
         end
@@ -26,11 +27,11 @@ class User < ActiveRecord::Base
     #method to authenticate user and return a user instance
     def self.login
         prompt = TTY::Prompt.new
-        puts "Please enter name:"
-        name = gets.chomp
-        user = all.find_by(name: name)
+        name = prompt.ask("Please enter your slack display name: ")
+        user = all.find_by(display_name: name)
+        pizza = prompt.decorate('🍕 ')
         if user
-            password = prompt.mask("Please enter a password:")
+            password = prompt.mask("Please enter a password:", mask: pizza)
             if !user.password
                 puts "Setting your password...."
                 user.update(password: password)
@@ -49,19 +50,39 @@ class User < ActiveRecord::Base
         end
     end
 
+    def self.display_messages_by_user
+        prompt = TTY::Prompt.new
+        input = prompt.ask("Enter a user's name: ")
+        user = self.find_by(display_name: input)
+        if user
+            user.display_messages
+        else
+            "Invalid user name"
+            self.display_messages_by_user
+        end
+    end
+
     # instance methods
 
-    def display_messages(cursor=0)
-        choices = []
+    def display_messages
         prompt = TTY::Prompt.new
-        self.messages.each do |message|
-            choices << { 
-                name: "Poster: #{message.get_poster_name} Time: #{message.datetime} \n#{message.text[0..100]}...\n",
+        choices = self.messages.map do |message|
+            { 
+                name: "Poster: #{message.get_poster_name} @ #{message.datetime} \n#{message.text[0..100]}...\n",
                 value: message
             }
         end
         input = prompt.enum_select("Which messages would you like to read?", choices, per_page: 5)
         input.display
+    end
+
+    def display_channels
+        prompt = TTY::Prompt.new
+        choices = self.channels.uniq.map do |channel|
+            {name: "#{channel.name} \n #{channel.topic} \n ", value: channel}
+        end
+        input = prompt.select("Which channel would you like to read", choices)
+        input.display_messages
     end
 
 end

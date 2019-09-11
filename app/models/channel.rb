@@ -33,7 +33,20 @@ class Channel < ActiveRecord::Base
                 subtype: message["subtype"]
             })
         end
+    end
 
+    def display_messages
+        choices = []
+        prompt = TTY::Prompt.new
+        self.messages.each do |message|
+            p message.get_poster_name
+            choices << { 
+                name: "#{message.get_poster_name} @ #{message.datetime} in #{message.get_channel_name}\n#{message.text[0..100]}...\n",
+                value: message
+            }
+        end
+        input = prompt.enum_select("Which messages would you like to read?", choices, per_page: 5)
+        input.display
     end
 
 end
