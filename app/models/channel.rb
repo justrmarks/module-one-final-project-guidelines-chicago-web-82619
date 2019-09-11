@@ -41,12 +41,34 @@ class Channel < ActiveRecord::Base
         self.messages.each do |message|
             p message.get_poster_name
             choices << { 
-                name: "#{message.get_poster_name} @ #{message.datetime} in #{message.get_channel_name}\n#{message.text[0..100]}...\n",
+                name: "#{message.get_poster_name} @ #{message.datetime} in #{message.get_channel_name}\n#{message.text}...\n",
                 value: message
             }
         end
         input = prompt.enum_select("Which messages would you like to read?", choices, per_page: 5)
         input.display
+    end
+
+    def post_message(user)
+        prompt = TTY::Prompt.new
+        input = prompt.ask("Type your message: ")
+        payload = {
+            "channel": self.slack_id,
+            "text": "@#{user.display_name} says: #{input}"
+        }
+        post_header = {
+            "Content-type": "application/json",
+            "Authorization": "Bearer #{token}"
+        }
+        post_call = RestClient.post("https://slack.com/api/chat.postMessage", payload, post_header)
+        message = post_call["message"]
+        Message.create(
+            ts: Time.at(message["ts"].to_f),
+            user_id: user.slack_id,
+            text: message["text"],
+            channel_id: self.slack_id,
+            subtype: message["subtype"]
+        )
     end
 
 end

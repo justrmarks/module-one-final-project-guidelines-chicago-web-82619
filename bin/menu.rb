@@ -38,10 +38,14 @@ class Menu
         case input 
             when 1 
                 self.user.display_messages
+                main_menu
             when 2 
-                self.user.display_channels
+                channel = self.user.display_channels
+                channel.display_messages
+                main_menu
             when 3 
                 User.display_messages_by_user
+                main_menu
             when 4 
                 main_menu
         end
@@ -49,7 +53,9 @@ class Menu
 
     def write_menu
         system("clear")
-        puts "write_menu"
+        log_user = self.user
+        log_user.display_channels.post_message(log_user).display
+        main_menu
     end
     
     def insight_menu

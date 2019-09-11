@@ -68,7 +68,7 @@ class User < ActiveRecord::Base
         prompt = TTY::Prompt.new
         choices = self.messages.map do |message|
             { 
-                name: "Poster: #{message.get_poster_name} @ #{message.datetime} \n#{message.text[0..100]}...\n",
+                name: "Poster: #{message.get_poster_name} @ #{message.datetime} \n#{message.text}...\n",
                 value: message
             }
         end
@@ -81,8 +81,8 @@ class User < ActiveRecord::Base
         choices = self.channels.uniq.map do |channel|
             {name: "#{channel.name} \n #{channel.topic} \n ", value: channel}
         end
-        input = prompt.select("Which channel would you like to read", choices)
-        input.display_messages
+        input = prompt.select("Please select a channel", choices)
+        
     end
 
 end

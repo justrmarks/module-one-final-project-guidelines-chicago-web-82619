@@ -21,8 +21,9 @@ class Message < ActiveRecord::Base
         prompt = TTY::Prompt.new
         system("clear")
         puts "#{self.get_poster_name} @ #{self.datetime}"
-        puts "-" * self.text.length
+        puts "-" * 100
         puts self.text
+        prompt.keypress("Press any key to return to main menu.")
     end
 
 end
