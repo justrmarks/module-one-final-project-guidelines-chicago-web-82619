@@ -1,0 +1,2 @@
+User.update_users
+Channel.update_channels
