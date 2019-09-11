@@ -14,7 +14,9 @@ class Message < ActiveRecord::Base
     end
 
     def datetime
-        Time.at(self.ts.to_f).strftime("%H:%M")
+        #Time.at(self.ts.to_f).strftime("%H:%M")
+        ### fix
+        DateTime.strptime(self.ts,'%s')
     end
 
     def display

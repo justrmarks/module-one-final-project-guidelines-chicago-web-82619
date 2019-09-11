@@ -13,7 +13,7 @@ class Channel < ActiveRecord::Base
             else
                 Channel.find_or_create_by({
                     slack_id: channel["id"],
-                    name: channel["name"],
+                    name: "##{channel["name"]}",
                     topic: channel["topic"]["value"]
                 })
             end
@@ -28,7 +28,7 @@ class Channel < ActiveRecord::Base
            if message["user"] == "cli_input" # replace with variable stored in environment.rb later
             user = User.find_by(message["text"].split("*")[1])
             Message.find_or_create_by({
-                ts: Time.at(message["ts"].to_f),
+                ts: message["ts"],
                 user_id: user.slack_id,
                 text: message["text"],
                 channel_id: self.slack_id,
@@ -36,7 +36,7 @@ class Channel < ActiveRecord::Base
             })
            else
             Message.find_or_create_by({
-                ts: Time.at(message["ts"].to_f),
+                ts: message["ts"],
                 user_id: message["user"],
                 text: message["text"],
                 channel_id: self.slack_id,
@@ -50,9 +50,9 @@ class Channel < ActiveRecord::Base
         choices = []
         prompt = TTY::Prompt.new
         self.messages.each do |message|
-            p message.get_poster_name
+            time = Time.at(message["ts"].to_f)
             choices << { 
-                name: "#{message.get_poster_name} @ #{message.datetime} in #{message.get_channel_name}\n#{message.text}...\n",
+                name: "#{message.get_poster_name} @ #{time.strftime("%I:%M %p")} in #{message.get_channel_name}\n#{message.text}...\n",
                 value: message
             }
         end
@@ -81,6 +81,28 @@ class Channel < ActiveRecord::Base
             channel_id: self.slack_id,
             subtype: message["subtype"]
         )
+    end
+
+    def insights
+        system("clear")
+        prompt = TTY::Prompt.new
+        puts "* Number of Users: #{self.users.uniq.count}"
+        puts  "*"
+        puts "* Number of Posts: #{self.messages.uniq.count}"
+        puts "*"
+        puts "* Most active user: #{self.most_active_user}"
+        puts "*"
+        puts "* Least active user: #{self.least_active_user}"
+        puts "*" * 20
+        prompt.keypress("Press any key to return to main menu")
+    end
+
+    def most_active_user
+        self.users.uniq.max_by {|user| user.messages.size}.display_name
+    end
+
+    def least_active_user
+        self.users.uniq.min_by {|user| user.messages.size}.display_name
     end
 
 end

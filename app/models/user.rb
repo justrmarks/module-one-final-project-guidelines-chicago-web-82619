@@ -66,9 +66,10 @@ class User < ActiveRecord::Base
 
     def display_messages
         prompt = TTY::Prompt.new
-        choices = self.messages.map do |message|
-            { 
-                name: "Poster: #{message.get_poster_name} @ #{message.datetime} \n#{message.text}...\n",
+        choices = []
+        self.messages.each do |message|
+            choices << { 
+                name: "#{message.get_poster_name} @ #{message.datetime} in #{message.get_channel_name} \n#{message.text}...\n",
                 value: message
             }
         end

@@ -60,7 +60,8 @@ class Menu
     
     def insight_menu
         system("clear")
-        puts "insight_menu"
+        self.user.display_channels.insights
+        main_menu
     end
 
     def exit
