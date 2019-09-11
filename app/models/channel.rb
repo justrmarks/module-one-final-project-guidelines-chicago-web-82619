@@ -25,6 +25,16 @@ class Channel < ActiveRecord::Base
     def update_messages
         data = JSON.parse(RestClient.get("https://slack.com/api/channels.history?token=#{token}&channel=#{self.slack_id}"))
         data["messages"].each do |message|
+           if message["user"] == "cli_input" # replace with variable stored in environment.rb later
+            user = User.find_by(message["text"].split("*")[1])
+            Message.find_or_create_by({
+                ts: Time.at(message["ts"].to_f),
+                user_id: user.slack_id,
+                text: message["text"],
+                channel_id: self.slack_id,
+                subtype: message["subtype"]                
+            })
+           else
             Message.find_or_create_by({
                 ts: Time.at(message["ts"].to_f),
                 user_id: message["user"],
@@ -32,6 +42,7 @@ class Channel < ActiveRecord::Base
                 channel_id: self.slack_id,
                 subtype: message["subtype"]
             })
+        end
         end
     end
 
@@ -54,18 +65,19 @@ class Channel < ActiveRecord::Base
         input = prompt.ask("Type your message: ")
         payload = {
             "channel": self.slack_id,
-            "text": "@#{user.display_name} says: #{input}"
+            "text": "*#{user.display_name}* says~ #{input}"
         }
         post_header = {
             "Content-type": "application/json",
             "Authorization": "Bearer #{token}"
         }
         post_call = RestClient.post("https://slack.com/api/chat.postMessage", payload, post_header)
-        message = post_call["message"]
-        Message.create(
-            ts: Time.at(message["ts"].to_f),
+        response = JSON.parse(post_call)
+        message = response["message"]
+        Message.find_or_create_by(
+            ts: message["ts"],
             user_id: user.slack_id,
-            text: message["text"],
+            text: message["text"].split("~")[1],
             channel_id: self.slack_id,
             subtype: message["subtype"]
         )
