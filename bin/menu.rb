@@ -65,8 +65,19 @@ class Menu
     end
 
     def exit
+       a = Artii::Base.new :font => "slant"
+       8.times {
        system("clear")
-       puts "GOOD BYE" 
+       puts a.asciify('Good Bye !')
+       puts "\n"
+       sleep(0.1)
+       system("clear")
+       puts a.asciify(' Good Bye !')
+       puts "\n"
+       sleep(0.1)
+    }
+    system("clear")
+    puts a.asciify('Good Bye !')
     end
 
 end
