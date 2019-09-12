@@ -3,19 +3,29 @@ class Message < ActiveRecord::Base
     belongs_to :channel, :foreign_key => "channel_id"
 
     def get_poster_name
-        User.all.find_by(slack_id: self.user_id).name
+        user = User.find_by(slack_id: self.user_id)
+        if user 
+            user.display_name
+        end
+    end 
+
+    def get_channel_name
+        Channel.all.find_by(slack_id: self.channel_id).name
     end
 
     def datetime
-        Time.at(self.ts.to_f).strftime("%H:%M")
+        #Time.at(self.ts.to_f).strftime("%H:%M")
+        ### fix
+        DateTime.strptime(self.ts,'%s')
     end
 
     def display
         prompt = TTY::Prompt.new
         system("clear")
         puts "#{self.get_poster_name} @ #{self.datetime}"
-        puts "-" * self.text.length
+        puts "-" * 100
         puts self.text
+        prompt.keypress("Press any key to return to main menu.")
     end
 
 end
