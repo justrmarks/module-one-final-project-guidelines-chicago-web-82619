@@ -9,7 +9,9 @@ class Channel < ActiveRecord::Base
         data = JSON.parse(RestClient.get("https://slack.com/api/channels.list?token=#{token}"))
         data["channels"].each do |channel|
             if channel["is_archived"]
-                Channel.destroy(Channel.find_by(slack_id: channel["id"]).id)
+                if Channel.find_by(slack_id: channel["id"])
+                    Channel.destroy(Channel.find_by(slack_id: channel["id"]).id)
+                end
             else
                 Channel.find_or_create_by({
                     slack_id: channel["id"],
@@ -25,8 +27,11 @@ class Channel < ActiveRecord::Base
     def update_messages
         data = JSON.parse(RestClient.get("https://slack.com/api/channels.history?token=#{token}&channel=#{self.slack_id}"))
         data["messages"].each do |message|
-           if message["user"] == "cli_input" # replace with variable stored in environment.rb later
-            user = User.find_by(message["text"].split("*")[1])
+           if message["subtype"] == "bot_message" # replace with variable stored in environment.rb later
+            user = User.find_by(display_name: message["text"].split("*")[1])
+            if user == nil
+                user = User.find_by(name: "cli_input")
+            end
             Message.find_or_create_by({
                 ts: message["ts"],
                 user_id: user.slack_id,
