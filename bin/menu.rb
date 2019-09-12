@@ -9,12 +9,12 @@ class Menu
         system("clear")
         prompt = TTY::Prompt.new
         choices = [
-            {name: "Read your messages", value: 1},
-            {name: "Write a message", value: 2},
-            {name: "Inspect a channel", value: 3},
-            {name: "Exit", value: 4}]
-        input = prompt.select("What would you like to do?", choices)
-        case input 
+            {name: "Read messages            ", value: 1},
+            {name: "Write a message          ", value: 2},
+            {name: "Inspect a channel        ", value: 3},
+            {name: "Exit                     ", value: 4}]
+        input = prompt.select("What would you like to do?".colorize(:blue), choices, active_color: :inverse)
+        case input
             when 1 
                 read_menu
             when 2 
@@ -30,11 +30,12 @@ class Menu
         system("clear")
         prompt = TTY::Prompt.new
         choices = [
-            {name: "All your messages", value: 1},
-            {name: "Messages by channel", value: 2},
-            {name: "Messages by user", value: 3},
-            {name: "Back", value: 4}]
-        input = prompt.select("Which messages would you like to read?", choices)
+            {name: "All your messages                    ", value: 1},
+            {name: "Messages by channel                  ", value: 2},
+            {name: "Messages by user                     ", value: 3},
+            {name: "Back                                 ", value: 4}]
+        input = prompt.select("Which messages would you like to read?".colorize(:blue), choices, active_color: :inverse)
+        puts "-".colorize(:bright_blue) * 38
         case input 
             when 1 
                 self.user.display_messages
