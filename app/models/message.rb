@@ -8,6 +8,13 @@ class Message < ActiveRecord::Base
             user.display_name
         end
     end 
+    
+    def get_color
+        user = User.find_by(slack_id: self.user_id)
+        if user
+            user.color
+        end
+    end
 
     def get_channel_name
         Channel.all.find_by(slack_id: self.channel_id).name
@@ -22,7 +29,12 @@ class Message < ActiveRecord::Base
     def display
         prompt = TTY::Prompt.new
         system("clear")
-        puts "#{self.get_poster_name} @ #{self.datetime}".colorize(:blue)
+        time = Time.at(self.ts.to_f)
+        color = self.get_color
+        if color == nil
+            color = "ffffff"
+        end
+        puts Rainbow("#{self.get_poster_name} @ #{time.strftime("%I:%M %p")}").color(color)
         puts "-" * 100
         puts self.text.colorize(:light_green)
         puts " "

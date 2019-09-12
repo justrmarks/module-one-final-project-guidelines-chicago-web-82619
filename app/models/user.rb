@@ -41,7 +41,11 @@ class User < ActiveRecord::Base
                 self.login
             else
                 puts "Signing in #{user.name}...".colorize(:green)
-                sleep 2
+                spinner = TTY::Spinner.new("[:spinner] Loading ...", format: :dots)
+                spinner.auto_spin 
+                sleep(1.5) 
+                spinner.stop('Done!') 
+                sleep(0.8)
                 user
             end
         else
@@ -68,12 +72,13 @@ class User < ActiveRecord::Base
         prompt = TTY::Prompt.new
         choices = []
         self.messages.each do |message|
+            time = Time.at(message.ts.to_f)
             choices << { 
-                name: "#{message.get_poster_name} @ #{message.datetime} in #{message.get_channel_name} \n     #{message.text}...\n",
+                name: Rainbow("#{message.get_poster_name} @ #{time.strftime("%I:%M %p")} in #{message.get_channel_name}").color(message.get_color) +  "\n#{message.text}...\n",
                 value: message
             }
         end
-        input = prompt.enum_select("Which messages would you like to read?".colorize(:blue), choices, per_page: 5, active_color: :inverse)
+        input = prompt.select("Which messages would you like to read?".colorize(:blue), choices, per_page: 5, active_color: :inverse)
         input.display
     end
 

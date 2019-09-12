@@ -1,6 +1,8 @@
 require 'bundler'
 require 'time'
 require 'date'
+require 'rainbow'
+require 'artii'
 require 'colorize'
 Bundler.require
 
