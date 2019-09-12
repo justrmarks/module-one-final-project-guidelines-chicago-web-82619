@@ -41,7 +41,16 @@ class User < ActiveRecord::Base
                 self.login
             else
                 puts "Signing in #{user.name}"
-                sleep 2
+                spinner = TTY::Spinner.new("[:spinner] Loading ...", format: :dots)
+
+                spinner.auto_spin # Automatic animation with default interval
+
+                sleep(1.5) # Perform task
+
+                spinner.stop('Done!') # Stop animation
+
+                sleep(1)
+
                 user
             end
         else

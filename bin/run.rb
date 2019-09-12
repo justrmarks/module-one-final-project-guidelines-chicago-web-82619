@@ -9,7 +9,7 @@ require 'pry'
 a = Artii::Base.new :font => "slant"
 puts a.asciify('Welcome')
 puts a.asciify('  To')
-puts Rainbow(a.asciify('    SLapi'))
+puts a.asciify('    SLapi')
 puts "\n"
 user = User.login
 menu = Menu.new(user)
