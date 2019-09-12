@@ -3,6 +3,7 @@ require 'sinatra/activerecord/rake'
 
 desc 'starts a console'
 task :console do
-  ActiveRecord::Base.logger = Logger.new(STDOUT)
+  old_logger = ActiveRecord::Base.logger
+  ActiveRecord::Base.logger = nil
   Pry.start
 end

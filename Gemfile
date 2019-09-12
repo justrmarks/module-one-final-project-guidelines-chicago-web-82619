@@ -9,3 +9,7 @@ gem "json"
 gem "rest-client"
 gem "tty-prompt"
 gem "bcrypt"
+gem "rainbow"
+gem "artii"
+gem 'tty-spinner'
+gem "colorize"
