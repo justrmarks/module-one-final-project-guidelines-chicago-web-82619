@@ -51,12 +51,16 @@ class Channel < ActiveRecord::Base
         prompt = TTY::Prompt.new
         self.messages.each do |message|
             time = Time.at(message["ts"].to_f)
+            color = message.get_color
+            if color == nil
+                color = "ffffff"
+            end
             choices << { 
-                name: "#{message.get_poster_name} @ #{time.strftime("%I:%M %p")} in #{message.get_channel_name}\n#{message.text}...\n",
+                name: Rainbow("#{message.get_poster_name} @ #{time.strftime("%I:%M %p")} in #{message.get_channel_name}").color(color) +  "\n#{message.text}...\n",
                 value: message
             }
         end
-        input = prompt.enum_select("Which messages would you like to read?", choices, per_page: 5)
+        input = prompt.select("Which messages would you like to read?", choices, per_page: 5)
         input.display
     end
 

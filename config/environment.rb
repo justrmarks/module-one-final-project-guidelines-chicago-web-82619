@@ -1,6 +1,7 @@
 require 'bundler'
 require 'time'
 require 'date'
+require 'rainbow'
 Bundler.require
 
 def token
