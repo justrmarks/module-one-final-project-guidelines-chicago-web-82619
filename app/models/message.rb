@@ -36,7 +36,8 @@ class Message < ActiveRecord::Base
         end
         puts Rainbow("#{self.get_poster_name} @ #{time.strftime("%I:%M %p")}").color(color)
         puts "-" * 100
-        puts self.text
+        puts self.text.colorize(:light_green)
+        puts " "
         prompt.keypress("Press any key to return to main menu.")
     end
 

@@ -12,3 +12,4 @@ gem "bcrypt"
 gem "rainbow"
 gem "artii"
 gem 'tty-spinner'
+gem "colorize"

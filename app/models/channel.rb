@@ -60,13 +60,13 @@ class Channel < ActiveRecord::Base
                 value: message
             }
         end
-        input = prompt.select("Which messages would you like to read?", choices, per_page: 5)
+        input = prompt.select("Which messages would you like to read?".colorize(:blue), choices, per_page: 5, active_color: :inverse)
         input.display
     end
 
     def post_message(user)
         prompt = TTY::Prompt.new
-        input = prompt.ask("Type your message: ")
+        input = prompt.ask("\n Type your message: ".colorize(:blue))
         payload = {
             "channel": self.slack_id,
             "text": "*#{user.display_name}* says~ #{input}"
@@ -90,14 +90,15 @@ class Channel < ActiveRecord::Base
     def insights
         system("clear")
         prompt = TTY::Prompt.new
-        puts "* Number of Users: #{self.users.uniq.count}"
-        puts  "*"
-        puts "* Number of Posts: #{self.messages.uniq.count}"
+        puts "*" * 40
+        puts "*" + " Number of Users: ".colorize(:blue) + "#{self.users.uniq.count}"
         puts "*"
-        puts "* Most active user: #{self.most_active_user}"
+        puts "*" + " Number of Posts: ".colorize(:blue) + "#{self.messages.uniq.count}"
         puts "*"
-        puts "* Least active user: #{self.least_active_user}"
-        puts "*" * 20
+        puts "*" + " Most active user: ".colorize(:blue) + "#{self.most_active_user}"
+        puts "*"
+        puts "*" + " Least active user: ".colorize(:blue) + "#{self.least_active_user}"
+        puts "*" * 40
         prompt.keypress("Press any key to return to main menu")
     end
 
