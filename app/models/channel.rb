@@ -62,7 +62,7 @@ class Channel < ActiveRecord::Base
 
     def post_message(user)
         prompt = TTY::Prompt.new
-        input = prompt.ask("Type your message: ".colorize(:blue))
+        input = prompt.ask("\n Type your message: ".colorize(:blue))
         payload = {
             "channel": self.slack_id,
             "text": "*#{user.display_name}* says~ #{input}"

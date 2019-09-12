@@ -7,6 +7,8 @@ class Menu
 
     def main_menu
         system("clear")
+        puts "Signed in as #{self.user.display_name}".colorize(:cyan)
+        puts " "
         prompt = TTY::Prompt.new
         choices = [
             {name: "Read messages            ", value: 1},
@@ -28,6 +30,8 @@ class Menu
 
     def read_menu
         system("clear")
+        puts "Signed in as #{self.user.display_name}".colorize(:cyan)
+        puts " "
         prompt = TTY::Prompt.new
         choices = [
             {name: "All your messages                    ", value: 1},
@@ -54,6 +58,8 @@ class Menu
 
     def write_menu
         system("clear")
+        puts "Signed in as #{self.user.display_name}".colorize(:cyan)
+        puts " "
         log_user = self.user
         log_user.display_channels.post_message(log_user).display
         main_menu
@@ -61,6 +67,8 @@ class Menu
     
     def insight_menu
         system("clear")
+        puts "Signed in as #{self.user.display_name}".colorize(:cyan)
+        puts " "
         self.user.display_channels.insights
         main_menu
     end

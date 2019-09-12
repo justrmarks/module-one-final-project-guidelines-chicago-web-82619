@@ -22,9 +22,10 @@ class Message < ActiveRecord::Base
     def display
         prompt = TTY::Prompt.new
         system("clear")
-        puts "#{self.get_poster_name} @ #{self.datetime}"
+        puts "#{self.get_poster_name} @ #{self.datetime}".colorize(:blue)
         puts "-" * 100
-        puts self.text
+        puts self.text.colorize(:light_green)
+        puts " "
         prompt.keypress("Press any key to return to main menu.")
     end
 
