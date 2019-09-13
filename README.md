@@ -1,4 +1,4 @@
-# SlAPI
+# SLAPI
 ## Setup
 Run `bundle install` to install dependencies and `rake db:migrate` to create the databases. Finally, run `rake db:seed` to populate the databases with real information from your Slack workspace.
 
