@@ -3,8 +3,8 @@
 Run `bundle install` to install dependencies and `rake db:migrate` to create the databases. Finally, run `rake db:seed` to populate the databases with real information from your Slack workspace.
 
 ## Getting Started
-* Run `ruby bin/run.rb` to start the program.
----
+Run `ruby bin/run.rb` to start the program.
+
 ## Models: Channels < Messages > Userss
 ### Channel
 * has_many :messages
