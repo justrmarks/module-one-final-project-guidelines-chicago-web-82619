@@ -21,7 +21,7 @@ Run `ruby bin/run.rb` to start the program.
 * `@slack_id` : channel ID
 * `@topic` : subject of discussion within the channel
 ### Users
-* `@name` : username (not their full name) usually corresponds to the user's email
+* `@name` : username (not display name) usually corresponds to the user's email
 * `@slack_id` : user ID
 * `@color` : HEX code randomly assigned to each user by slack
 * `@email` : user email
@@ -35,5 +35,4 @@ Run `ruby bin/run.rb` to start the program.
 * `@subtype` : type of message
 ---
 ## API
-### SLACK
 * https://api.slack.com/
