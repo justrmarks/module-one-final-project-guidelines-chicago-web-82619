@@ -5,7 +5,7 @@ Run `bundle install` to install dependencies and `rake db:migrate` to create the
 ## Getting Started
 Run `ruby bin/run.rb` to start the program.
 
-## Models: Channels < Messages > Userss
+## Models: Channels < Messages > Users
 ### Channel
 * has_many :messages
 * has_many :users, through: :messages
