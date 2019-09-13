@@ -7,6 +7,8 @@ class Menu
 
     def main_menu
         system("clear")
+        puts "Main Menu"
+        puts "-----------------------"
         prompt = TTY::Prompt.new
         choices = [
             {name: "Read your messages", value: 1},
@@ -33,28 +35,38 @@ class Menu
             {name: "All your messages", value: 1},
             {name: "Messages by channel", value: 2},
             {name: "Messages by user", value: 3},
+            {name: "Encrypted messages", value: 4}
             {name: "Back", value: 4}]
         input = prompt.select("Which messages would you like to read?", choices)
         case input 
             when 1 
                 self.user.display_messages
+                main_menu
             when 2 
-                write_menu
+                channel = self.user.display_channels
+                channel.display_messages
+                main_menu
             when 3 
-                insight_menu
+                User.display_messages_by_user
+                main_menu
             when 4 
-                exit
+                Channel.find_by(name: "#secret").display_encrypted_messages(self.user)
+            when 5 
+                main_menu
         end
     end
 
     def write_menu
         system("clear")
-        puts "write_menu"
+        log_user = self.user
+        log_user.display_channels.post_message(log_user).display
+        main_menu
     end
     
     def insight_menu
         system("clear")
-        puts "insight_menu"
+        self.user.display_channels.insights
+        main_menu
     end
 
     def exit

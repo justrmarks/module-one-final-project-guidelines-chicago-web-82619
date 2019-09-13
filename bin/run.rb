@@ -8,6 +8,9 @@ require 'pry'
 
 
 puts "Welcome to Slapi"
+User.update_users
+Channel.update_channels
+Channel.all.each { |channel| channel.update_messages }
 user = User.login
 menu = Menu.new(user)
 menu.main_menu
