@@ -7,6 +7,8 @@ class Menu
 
     def main_menu
         system("clear")
+        puts "Main Menu"
+        puts "-----------------------"
         puts "Signed in as #{self.user.display_name}".colorize(:cyan)
         puts " "
         prompt = TTY::Prompt.new
@@ -52,6 +54,8 @@ class Menu
                 User.display_messages_by_user
                 main_menu
             when 4 
+                Channel.find_by(name: "#secret").display_encrypted_messages(self.user)
+            when 5 
                 main_menu
         end
     end

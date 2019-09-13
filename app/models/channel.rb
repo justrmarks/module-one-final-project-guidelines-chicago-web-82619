@@ -26,12 +26,17 @@ class Channel < ActiveRecord::Base
 
     def update_messages
         data = JSON.parse(RestClient.get("https://slack.com/api/channels.history?token=#{token}&channel=#{self.slack_id}"))
-        data["messages"].each do |message|
+
+        data["messages"].each do |message| 
+            if self.name == "#public_keys"
+                User.update_public_keys(data["messages"])
+            
            if message["subtype"] == "bot_message" # replace with variable stored in environment.rb later
             user = User.find_by(display_name: message["text"].split("*")[1])
             if user == nil
                 user = User.find_by(name: "cli_input")
             end
+
             Message.find_or_create_by({
                 ts: message["ts"],
                 user_id: user.slack_id,
@@ -39,7 +44,7 @@ class Channel < ActiveRecord::Base
                 channel_id: self.slack_id,
                 subtype: message["subtype"]                
             })
-           else
+            else
             Message.find_or_create_by({
                 ts: message["ts"],
                 user_id: message["user"],
@@ -47,7 +52,7 @@ class Channel < ActiveRecord::Base
                 channel_id: self.slack_id,
                 subtype: message["subtype"]
             })
-        end
+            end
         end
     end
 
@@ -113,6 +118,23 @@ class Channel < ActiveRecord::Base
 
     def least_active_user
         self.users.uniq.min_by {|user| user.messages.size}.display_name
+    end
+
+    def display_decrypted_messages
+        messages = self.messages.select {|message| message.decrypt}
+        puts "#{messages.size} message(s) decrypted"
+        choices = []
+        prompt = TTY::Prompt.new
+
+        messages.each do |message|
+            time = Time.at(message["ts"].to_f)
+            choices << { 
+                name: "@ #{time.strftime("%I:%M %p")} in #{message.get_channel_name}\n#{message.text}...\n",
+                value: message
+            }
+        end
+        input = prompt.enum_select("Which messages would you like to read?", choices, per_page: 5)
+        input.display
     end
 
 end

@@ -9,6 +9,10 @@ require 'pry'
 a = Artii::Base.new :font => "slant"
 
 
+User.update_users
+Channel.update_channels
+Channel.all.each { |channel| channel.update_messages }
+
 2.times {
 system("clear")
 puts a.asciify('Welcome')
