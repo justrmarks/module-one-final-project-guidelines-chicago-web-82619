@@ -11,3 +11,8 @@ gem "tty-prompt"
 gem "bcrypt"
 gem "cryptosystem"
 gem "encryption"
+gem "rainbow"
+gem "artii"
+gem 'tty-spinner'
+gem "colorize"
+

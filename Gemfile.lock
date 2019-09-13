@@ -13,8 +13,10 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
     arel (7.1.4)
+    artii (2.1.2)
     bcrypt (3.1.13)
     coderay (1.1.1)
+    colorize (0.8.1)
     concurrent-ruby (1.0.5)
     cryptosystem (1.0.0)
     domain_name (0.5.20190701)
@@ -71,6 +73,8 @@ GEM
       tty-screen (~> 0.7)
       wisper (~> 2.0.0)
     tty-screen (0.7.0)
+    tty-spinner (0.9.1)
+      tty-cursor (~> 0.7)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     unf (0.1.4)
@@ -82,9 +86,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  artii
   bcrypt
   cryptosystem
   encryption
+  colorize
   json
   pry
   require_all
@@ -92,6 +98,7 @@ DEPENDENCIES
   sinatra-activerecord
   sqlite3
   tty-prompt
+  tty-spinner
 
 BUNDLED WITH
    1.17.3
