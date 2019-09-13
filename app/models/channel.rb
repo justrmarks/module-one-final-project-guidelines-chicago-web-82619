@@ -71,7 +71,8 @@ class Channel < ActiveRecord::Base
 
     def post_message(user)
         prompt = TTY::Prompt.new
-        input = prompt.ask("\n Type your message: ".colorize(:blue))
+        puts ""
+        input = prompt.ask("Type your message: ".colorize(:blue))
         payload = {
             "channel": self.slack_id,
             "text": "*#{user.display_name}* says~ #{input}"
@@ -108,11 +109,11 @@ class Channel < ActiveRecord::Base
     end
 
     def most_active_user
-        self.users.uniq.max_by {|user| user.messages.size}.display_name
+        self.users.uniq.max_by {|user| user.messages.size}.display_name }
     end
 
     def least_active_user
-        self.users.uniq.min_by {|user| user.messages.size}.display_name
+        self.users.uniq.min_by {|user| user.messages.size}.display_name }
     end
 
 end
