@@ -13,11 +13,12 @@ class Channel < ActiveRecord::Base
                     Channel.destroy(Channel.find_by(slack_id: channel["id"]).id)
                 end
             else
-                Channel.find_or_create_by({
+                p Channel.find_or_create_by({
                     slack_id: channel["id"],
                     name: "##{channel["name"]}",
                     topic: channel["topic"]["value"]
                 })
+                
             end
         end
     end
@@ -30,28 +31,33 @@ class Channel < ActiveRecord::Base
         data["messages"].each do |message| 
             if self.name == "#public_keys"
                 User.update_public_keys(data["messages"])
-            
-           if message["subtype"] == "bot_message" # replace with variable stored in environment.rb later
-            user = User.find_by(display_name: message["text"].split("*")[1])
-            if user == nil
-                user = User.find_by(name: "cli_input")
             end
-
-            Message.find_or_create_by({
-                ts: message["ts"],
-                user_id: user.slack_id,
-                text: message["text"],
-                channel_id: self.slack_id,
-                subtype: message["subtype"]                
-            })
+            
+            if message["subtype"] == "bot_message" # replace with variable stored in environment.rb later
+                user = User.find_by(display_name: message["text"].split("*")[1])
+                if user == nil
+                    user = User.find_by(name: "cli_input")
+                end
+                if !Message.find_by(ts: message["ts"]) 
+                    Message.create({
+                        ts: message["ts"],
+                        user_id: user.slack_id,
+                        text: message["text"],
+                        channel_id: self.slack_id,
+                        subtype: message["subtype"]  
+                    })
+                end
             else
-            Message.find_or_create_by({
-                ts: message["ts"],
-                user_id: message["user"],
-                text: message["text"],
-                channel_id: self.slack_id,
-                subtype: message["subtype"]
-            })
+                if !Message.find_by(ts: message["ts"]) 
+                    Message.create({
+                        ts: message["ts"],
+                        user_id: message["user"],
+                        text: message["text"],
+                        channel_id: self.slack_id,
+                        subtype: message["subtype"]  
+                    })
+                end
+
             end
         end
     end
@@ -114,11 +120,11 @@ class Channel < ActiveRecord::Base
     end
 
     def most_active_user
-        self.users.uniq.max_by {|user| user.messages.size}.display_name }
+        self.users.uniq.max_by {|user| user.messages.size}.display_name 
     end
 
     def least_active_user
-        self.users.uniq.min_by {|user| user.messages.size}.display_name }
+        self.users.uniq.min_by {|user| user.messages.size}.display_name 
     end
 
     def display_decrypted_messages
@@ -137,5 +143,4 @@ class Channel < ActiveRecord::Base
         input = prompt.enum_select("Which messages would you like to read?", choices, per_page: 5)
         input.display
     end
-
 end

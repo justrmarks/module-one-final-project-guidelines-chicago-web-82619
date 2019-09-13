@@ -101,8 +101,9 @@ class User < ActiveRecord::Base
 
     def display_channels
         prompt = TTY::Prompt.new
-        choices = self.channels.uniq.map do |channel|
-            {name: "#{channel.name} \n  #{channel.topic}", value: channel}
+        choices = []
+        self.channels.uniq.each do |channel|
+            choices << {name: "#{channel.name} \n  #{channel.topic}", value: channel}
         end
         input = prompt.select("Please select a channel".colorize(:blue), choices, active_color: :inverse)
         
@@ -137,3 +138,4 @@ class User < ActiveRecord::Base
     
 
 end
+

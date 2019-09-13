@@ -6,6 +6,9 @@ class Menu
     end
 
     def main_menu
+        User.update_users
+        Channel.update_channels
+        Channel.all.each { |channel| channel.update_messages }
         system("clear")
         puts "Main Menu"
         puts "-----------------------"

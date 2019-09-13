@@ -7,7 +7,7 @@ require 'colorize'
 Bundler.require
 
 def token
-    token = File.read("./secret/token.env")
+    token = File.read("./secret.env")
 end
 
 
