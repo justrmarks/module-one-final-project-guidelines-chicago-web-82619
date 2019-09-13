@@ -1,3 +1,4 @@
+
 class User < ActiveRecord::Base
     has_many :messages
     has_many :channels, through: :messages
@@ -35,6 +36,7 @@ class User < ActiveRecord::Base
             if !user.password
                 puts "Setting your password...."
                 user.update(password: password)
+                user.generate_keys if (!File.exist?("secret/public.key") || !File.exist?("secret/private.key"))
                 user
             elsif user.password != password
                 puts "Incorrect password"
@@ -42,6 +44,7 @@ class User < ActiveRecord::Base
             else
                 puts "Signing in #{user.name}"
                 sleep 2
+                user.generate_keys if (!File.exist?("secret/public.key") || !File.exist?("secret/private.key"))
                 user
             end
         else
@@ -59,6 +62,20 @@ class User < ActiveRecord::Base
         else
             "Invalid user name"
             self.display_messages_by_user
+        end
+    end
+
+    # updates User table foreign key values
+    # messages = array of message hashes returned by Slack API from channel: #public_keys
+    def self.update_public_keys(messages)
+        messages.each do |message|
+            data = message["text"].split("\n")
+            id = data.shift()
+            public_key = data.join("\n")
+            user = self.find_by(slack_id: id)
+            if (user)
+                user.update(public_key: public_key) 
+            end
         end
     end
 
@@ -85,5 +102,33 @@ class User < ActiveRecord::Base
         input = prompt.select("Please select a channel", choices)
         
     end
+
+    def generate_keys
+        puts "Generating new keys..."
+        keypair = Encryption::Keypair.new
+        public_key_f = File.open("secret/public.key",'w')
+        private_key_f = File.open("secret/private.key", 'w')
+        public_key_f.write(keypair.public_key)
+        private_key_f.write(keypair.private_key)
+        self.update(public_key: keypair.public_key)
+        self.share_public_key
+    end
+
+    ## posts public keys to channel '#public_keys'
+    def share_public_key
+        payload = {
+            "channel": "#public_keys",
+            "text": "#{self.slack_id}\n#{self.public_key}"
+        }
+        post_header = {
+            "Content-type": "application/json",
+            "Authorization": "Bearer #{token}"
+        }
+        post_call = RestClient.post("https://slack.com/api/chat.postMessage", payload, post_header)
+        puts "Public key posted in #public_keys"
+    end
+
+
+    
 
 end

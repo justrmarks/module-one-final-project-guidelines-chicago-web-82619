@@ -16,8 +16,10 @@ GEM
     bcrypt (3.1.13)
     coderay (1.1.1)
     concurrent-ruby (1.0.5)
+    cryptosystem (1.0.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
+    encryption (1.1.8)
     equatable (0.6.1)
     http-accept (1.7.0)
     http-cookie (1.0.3)
@@ -41,7 +43,6 @@ GEM
     rack (1.6.5)
     rack-protection (1.5.3)
       rack
-    rainbow (3.0.0)
     require_all (1.3.3)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -82,9 +83,10 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt
+  cryptosystem
+  encryption
   json
   pry
-  rainbow
   require_all
   rest-client
   sinatra-activerecord
